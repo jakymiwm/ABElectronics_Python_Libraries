@@ -209,8 +209,8 @@ class IO:
         """
         self._bus = bus
         self._bus.write_byte_data(self.__ioaddress, self.IOCON, self.__ioconfig)
-        self.portA_val = self._bus.read_byte_data(self.__ioaddress, self.GPIOA)
-        self.portB_val = self._bus.read_byte_data(self.__ioaddress, self.GPIOB)
+        self.__portA_val = self._bus.read_byte_data(self.__ioaddress, self.GPIOA)
+        self.__portB_val = self._bus.read_byte_data(self.__ioaddress, self.GPIOB)
         self._bus.write_byte_data(self.__ioaddress, self.IODIRA, 0xFF)
         self._bus.write_byte_data(self.__ioaddress, self.IODIRB, 0xFF)
         return
@@ -245,11 +245,11 @@ class IO:
          """
         pin = pin - 1
         if pin < 8:
-            self.port_a_dir = self.__updatebyte(self.port_a_dir, pin, direction)
-            self._bus.write_byte_data(self.address, self.IODIRA, self.port_a_dir)
+            self.__portA_dir = self.__updatebyte(self.__portA_dir, pin, direction)
+            self._bus.write_byte_data(self.address, self.IODIRA, self.__portA_dir)
         else:
-            self.port_b_dir  = self.__updatebyte(self.port_b_dir, pin - 8, direction)
-            self._bus.write_byte_data(self.address, self.IODIRB, self.port_b_dir)
+            self.__portB_dir  = self.__updatebyte(self.__portB_dir, pin - 8, direction)
+            self._bus.write_byte_data(self.address, self.IODIRB, self.__portB_dir)
         return
 
     def set_port_direction(self, port, direction):
@@ -275,11 +275,11 @@ class IO:
         """
         pin = pin - 1
         if pin < 8:
-            self.porta_pullup = self.__updatebyte(self.porta_pullup, pin, value)
-            self._bus.write_byte_data(self.address, self.GPPUA, self.porta_pullup)
+            self.__portA_pullup = self.__updatebyte(self.__portA_pullup, pin, value)
+            self._bus.write_byte_data(self.address, self.GPPUA, self.__portA_pullup)
         else:
-            self.portb_pullup = self.__updatebyte(self.portb_pullup,pin - 8,value)
-            self._bus.write_byte_data(self.address, self.GPPUB, self.portb_pullup)
+            self.__portB_pullup = self.__updatebyte(self.__portB_pullup,pin - 8,value)
+            self._bus.write_byte_data(self.address, self.GPPUB, self.__portB_pullup)
         return
 
     def set_port_pullups(self, port, value):
@@ -381,10 +381,10 @@ class IO:
 
         if port == 1:
             self._bus.write_byte_data(self.__ioaddress, self.IPOLB, polarity)
-            self.portb_polarity = polarity
+            self.__portB_polarity = polarity
         else:
             self._bus.write_byte_data(self.__ioaddress, self.IPOLA, polarity)
-            self.porta_polarity = polarity
+            self.__portA_polarity = polarity
         return
 
     def invert_pin(self, pin, polarity):

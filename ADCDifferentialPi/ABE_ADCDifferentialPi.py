@@ -2,26 +2,27 @@
 
 """
 ================================================
-ABElectronics ADC Pi V2 8-Channel ADC
-Version 1.0 Created 09/05/2014
-Version 1.1 16/11/2014 updated code and functions to PEP8 format
+ABElectronics ADC Differential Pi 8-Channel ADC
+Version 1.0 Created 30/09/2015
+
 Requires python smbus to be installed
 
 ================================================
 """
 
 
-class ADCPi:
+class ADCDifferentialPi:
     # internal variables
 
-    __address = 0x68  # default address for adc 1 on adc pi and delta-sigma pi
-    __address2 = 0x69  # default address for adc 2 on adc pi and delta-sigma pi
-    __config1 = 0x9C  # PGAx1, 18 bit, continuous conversion, channel 1
+    __address = 0x68  # default address for adc 1 on the adc differential pi
+    __address2 = 0x69  # default address for adc 2 on the adc differential pi
+    __config1 = 0x9C  # PGAx1, 18 bit, one-shot conversion, channel 1
     __currentchannel1 = 1  # channel variable for adc 1
-    __config2 = 0x9C  # PGAx1, 18 bit, continuous-shot conversion, channel 1
+    __config2 = 0x9C  # PGAx1, 18 bit, one-shot conversion, channel 1
     __currentchannel2 = 1  # channel variable for adc2
     __bitrate = 18  # current bitrate
     __conversionmode = 1 # Conversion Mode
+    __signbit = False  # signed bit checker
     __pga = float(0.5)  # current pga setting
     __lsb = float(0.0000078125)  # default lsb value for 18 bit
 
@@ -47,11 +48,10 @@ class ADCPi:
     def __checkbit(self, byte, bit):
             # internal method for reading the value of a single bit within a
             # byte
-        bitval = ((byte & (1 << bit)) != 0)
-        if (bitval == 1):
-            return True
+        if byte & (1 << bit):
+            return 1
         else:
-            return False
+            return 0
 
     def __twos_comp(self, val, bits):
         if((val & (1 << (bits - 1))) != 0):
@@ -106,15 +106,16 @@ class ADCPi:
         self.set_bit_rate(rate)
 
     def read_voltage(self, channel):
-        # returns the voltage from the selected adc channel - channels 1 to
-        # 8
+            # returns the voltage from the selected adc channel - channels 1 to
+            # 8
         raw = self.read_raw(channel)
+
+        voltage = float((raw * (self.__lsb / self.__pga)))
         if (self.__signbit):
-            return float(0.0)  # returned a negative voltage so return 0
+            voltage = ((raw * (self.__lsb / self.__pga)) - 2.048)
         else:
-            voltage = float(
-                (raw * (self.__lsb / self.__pga)) * 2.471)
-            return float(voltage)
+            voltage = (raw * (self.__lsb / self.__pga))
+        return float(voltage)
 
     def read_raw(self, channel):
         # reads the raw value from the selected adc channel - channels 1 to 8
