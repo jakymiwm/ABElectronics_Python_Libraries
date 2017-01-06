@@ -30,14 +30,9 @@ while (True):
     os.system('clear')
 
     # read from adc channels and print to screen
-    print ("Channel 1: %02f" % adc.read_voltage(1))
-    print ("Channel 2: %02f" % adc.read_voltage(2))
-    print ("Channel 3: %02f" % adc.read_voltage(3))
-    print ("Channel 4: %02f" % adc.read_voltage(4))
-    print ("Channel 5: %02f" % adc.read_voltage(5))
-    print ("Channel 6: %02f" % adc.read_voltage(6))
-    print ("Channel 7: %02f" % adc.read_voltage(7))
-    print ("Channel 8: %02f" % adc.read_voltage(8))
+    print ("Channel 1: %d" % adc.read_raw(1))
+    print ("Sign Bit: %d" % adc.get_signbit())
+   
 
     # wait 0.5 seconds before reading the pins again
     time.sleep(0.5)

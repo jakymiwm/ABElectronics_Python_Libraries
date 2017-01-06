@@ -1,7 +1,7 @@
 AB Electronics UK Expander Pi Python Library
 =====
 
-Python Library to use with Expander Pi board from http://www.abelectronics.co.uk
+Python Library to use with Expander Pi board from https://www.abelectronics.co.uk
 
 The Expander Pi contains separate classes for the real-time clock, analogue to digital converter, digital to analogue converter and the digital I/O pins.  Examples are included to show how each of the classes can be used.
 
@@ -32,19 +32,64 @@ The ADC class controls the functions on the 12 bit 8 channel Analogue to Digital
 Functions:
 ----------
 
-```
-read_adc_voltage(channel) 
-```   
-Read the voltage from the selected channel on the ADC   
-**Parameters:** channel = options are: 1 to 8   
-**Returns:** voltage
 
 ```
-read_adc_raw(channel) 
+read_adc_voltage(channel, mode) 
+```   
+Read the voltage from the selected channel on the ADC   
+**Parameters:** channel = options are: 1 to 8 , mode = 0 or 1 - 0 = single ended, 1 = differential
+**Returns:** voltage
+
+In single ended mode the channel number corresponds to the number on the Expander Pi.  In differential mode channel the number selects the channels as follows:
+
+| Channel  | Mode         | Channel Selection On Expander Pi   |
+|-------|--------------|----------------------|
+| 1     | single-ended | 1                    |
+| 2     | single-ended | 2                    |
+| 3     | single-ended | 3                    |
+| 4     | single-ended | 4                    |
+| 5     | single-ended | 5                    |
+| 6     | single-ended | 6                    |
+| 7     | single-ended | 7                    |
+| 8     | single-ended | 8                    |
+| 1     | differential | CH1 = IN+  CH2 = IN- |
+| 2     | differential | CH1 = IN-  CH2 = IN+ |
+| 3     | differential | CH3 = IN+  CH4 = IN- |
+| 4     | differential | CH3 = IN-  CH4 = IN+ |
+| 5     | differential | CH5 = IN+  CH6 = IN- |
+| 6     | differential | CH5 = IN-  CH6 = IN+ |
+| 7     | differential | CH7 = IN+  CH8 = IN- |
+| 8     | differential | CH7 = IN-  CH8 = IN+ |
+
+
+```
+read_adc_raw(channel, mode) 
 ```   
 Read the raw value from the selected channel on the ADC   
-**Parameters:** channel = options are: 1 to 8   
+**Parameters:** channel = options are: 1 to 8 , mode = 0 or 1 - 0 = single ended, 1 = differential  
 **Returns:** raw 12 bit value (0 to 4096)
+
+In single ended mode the channel number corresponds to the number on the Expander Pi.  In differential mode channel the number selects the channels as follows:
+
+| Channel  | Mode         | Channel Selection On Expander Pi   |
+|-------|--------------|----------------------|
+| 1     | single-ended | 1                    |
+| 2     | single-ended | 2                    |
+| 3     | single-ended | 3                    |
+| 4     | single-ended | 4                    |
+| 5     | single-ended | 5                    |
+| 6     | single-ended | 6                    |
+| 7     | single-ended | 7                    |
+| 8     | single-ended | 8                    |
+| 1     | differential | CH1 = IN+  CH2 = IN- |
+| 2     | differential | CH1 = IN-  CH2 = IN+ |
+| 3     | differential | CH3 = IN+  CH4 = IN- |
+| 4     | differential | CH3 = IN-  CH4 = IN+ |
+| 5     | differential | CH5 = IN+  CH6 = IN- |
+| 6     | differential | CH5 = IN-  CH6 = IN+ |
+| 7     | differential | CH7 = IN+  CH8 = IN- |
+| 8     | differential | CH7 = IN-  CH8 = IN+ |
+
 
 
 ```

@@ -53,7 +53,7 @@ class ADCDACPi:
     # Define SPI bus and init
     spiADC = spidev.SpiDev()
     spiADC.open(0, 0)
-    spiADC.max_speed_hz = (4000000)
+    spiADC.max_speed_hz = (900000)
 
     spiDAC = spidev.SpiDev()
     spiDAC.open(0, 1)
@@ -84,24 +84,35 @@ class ADCDACPi:
 
             self.maxDacVoltage = self.__dacMaxOutput__[self.gain]
 
-    def read_adc_voltage(self, channel):
+    def read_adc_voltage(self, channel, mode):
         """
         Read the voltage from the selected channel on the ADC
          Channel = 1 or 2
         """
         if ((channel > 2) or (channel < 1)):
             print 'ADC channel needs to be 1 or 2'
-        raw = self.read_adc_raw(channel)
+        if ((mode > 1) or (mode < 0)):
+            print 'ADC mode needs to be 0 or 1. 0 = Single Ended, 1 = Differential'
+        raw = self.read_adc_raw(channel, mode)
         voltage = (self.__adcrefvoltage / 4096) * raw
         return voltage
 
-    def read_adc_raw(self, channel):
+    def read_adc_raw(self, channel, mode):
         # Read the raw value from the selected channel on the ADC
         # Channel = 1 or 2
         if ((channel > 2) or (channel < 1)):
             print 'ADC channel needs to be 1 or 2'
-        r = self.spiADC.xfer2([1, (1 + channel) << 6, 0])
-        ret = ((r[1] & 0x0F) << 8) + (r[2])
+        if ((mode > 1) or (mode < 0)):
+            print 'ADC mode needs to be 0 or 1. 0 = Single Ended, 1 = Differential'
+        if (mode == 0):            
+            r = self.spiADC.xfer2([1, (1 + channel) << 6, 0])
+            ret = ((r[1] & 0x0F) << 8) + (r[2])
+        if (mode == 1):
+            if (channel == 1):            
+                r = self.spiADC.xfer2([1, 0x00, 0])
+            else:
+                r = self.spiADC.xfer2([1, 0x40, 0])
+            ret = ((r[1]) << 8) + (r[2])
         return ret
 
     def set_adc_refvoltage(self, voltage):
